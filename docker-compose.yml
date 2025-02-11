@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  image-agent:
+    image: text-to-image-api:latest
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  gif-agent:
+    image: text-to-gif-api:latest
+    ports:
+      - "8001:8001"
+    networks:
+      - app-network
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  frontend:
+    image: nginx:alpine
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+    depends_on:
+      - image-agent
+      - gif-agent
+
+networks:
+  app-network:
+    driver: bridge
