@@ -1,0 +1,7 @@
+uvicorn
+fastapi
+torch
+diffusers
+transformers
+accelerate
+huggingface_hub
